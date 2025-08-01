@@ -37,6 +37,9 @@ export function Board(props: PropsWithoutRef<{size: number}>) {
   const [boardValue, setValue] = useState({} as BoardState);
   const [isXTurn, setIsXTurn] = useState(true);
   const [playerResult, setPlayerResult] = useState('' as 'X'|'O'|'');
+  const onResetClick = () => {
+    setValue({});
+  };
   const onClickHandler = (boardLineIndex: number, squareIndex: number) => {
     const newValue = isXTurn ? 'X' : 'O';
     const boardLineValue = boardValue?.[boardLineIndex] ?? {};
@@ -64,6 +67,9 @@ export function Board(props: PropsWithoutRef<{size: number}>) {
       {playerResult ? `${playerResult} is winner !` : ''}
       <br/>
       {boardLineList}
+      <div className="mt10">
+        <button className="ui grey basic button" onClick={() => onResetClick()}>Reset</button>
+      </div>
     </>
   );
 }
