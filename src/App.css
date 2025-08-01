@@ -47,3 +47,7 @@
   align-items: center;
   flex-direction: column;
 }
+
+.mt10 {
+  margin-top: 10px;
+}
