@@ -4,7 +4,7 @@ import { Board } from './components/board/Board'
 function App() {
   return (
     <div className="board-container">
-      <Board size={5}/>
+      <Board defaultSize={5}/>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useState, type PropsWithoutRef, type ReactElement } from "react";
 import { BoardLine, type BoardLineState } from "./BoardLine";
+import { BoardSizeInput } from "./BoardSizeInput";
 
 export type BoardState = {[key: number]: BoardLineState};
 
@@ -33,12 +34,14 @@ function checkForResult(player: 'X'|'O', state: BoardState, size: number) {
   return false;
 }
 
-export function Board(props: PropsWithoutRef<{size: number}>) {
+export function Board(props: PropsWithoutRef<{defaultSize: number}>) {
   const [boardValue, setValue] = useState({} as BoardState);
+  const [size, setSize] = useState(props.defaultSize);
   const [isXTurn, setIsXTurn] = useState(true);
   const [playerResult, setPlayerResult] = useState('' as 'X'|'O'|'');
   const onResetClick = () => {
     setValue({});
+    setPlayerResult('');
   };
   const onClickHandler = (boardLineIndex: number, squareIndex: number) => {
     const newValue = isXTurn ? 'X' : 'O';
@@ -51,7 +54,7 @@ export function Board(props: PropsWithoutRef<{size: number}>) {
       }
     };
     setValue(newBoardValue);
-    if (checkForResult(isXTurn ? 'X' : 'O', newBoardValue, props.size)) {
+    if (checkForResult(isXTurn ? 'X' : 'O', newBoardValue, size)) {
       setPlayerResult(isXTurn ? 'X' : 'O');
     }
     else {
@@ -59,8 +62,16 @@ export function Board(props: PropsWithoutRef<{size: number}>) {
     }
   };
   const boardLineList: ReactElement[] = [];
-  for (let boardLineIndex = 0; boardLineIndex < props.size; boardLineIndex++) {
-    boardLineList[boardLineIndex] = <BoardLine key={boardLineIndex} size={props.size} value={boardValue[boardLineIndex]} onClickHandler={(squareIndex) => onClickHandler(boardLineIndex, squareIndex)} gameover={!!playerResult} />
+  for (let boardLineIndex = 0; boardLineIndex < size; boardLineIndex++) {
+    boardLineList[boardLineIndex] = (
+      <BoardLine
+        key={boardLineIndex}
+        size={size}
+        value={boardValue[boardLineIndex]}
+        onClickHandler={(squareIndex) => onClickHandler(boardLineIndex, squareIndex)}
+        gameover={!!playerResult}
+      />
+    );
   }
   return (
     <>
@@ -68,7 +79,8 @@ export function Board(props: PropsWithoutRef<{size: number}>) {
       <br/>
       {boardLineList}
       <div className="mt10">
-        <button className="ui grey basic button" onClick={() => onResetClick()}>Reset</button>
+        <BoardSizeInput onSizeSelect={(value) => setSize(value)} disabled={!!playerResult} />
+        <button className="ui grey basic button ml10" disabled={!!playerResult} onClick={() => onResetClick()}>Reset</button>
       </div>
     </>
   );
